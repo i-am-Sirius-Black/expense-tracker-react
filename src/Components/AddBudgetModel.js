@@ -14,9 +14,6 @@ const AddBudgetModel = ({show, onClose,}) => {
         return null;
     }
 
-    //toaster notifiCATION
-    const notify =()=> toast.success("Budget Added")
-
     //TO CLOSE
     const handleClose =(e)=>{
         if(e.target.id ==="closeAddModal")
@@ -25,11 +22,29 @@ const AddBudgetModel = ({show, onClose,}) => {
     // on submit
     const handleSubmit=(e)=>{ 
             e.preventDefault();
-        //to add budget we're adding ref values that we ahave attached to the input field
+       
+        const budgetName = budgetNameRef.current.value.trim();
+        const max = parseFloat(maxSpendRef.current.value);
+
+        // validation before adding budget
+        if (!budgetName) {
+            toast.error("Budget name is required");
+            return;
+        }
+
+        if (isNaN(max) || max <= 0) {
+            toast.error("Please enter a valid number greater than 0");
+            return;
+        }
+
+        // add budget if valid
         addBudget({
-            budgetName: budgetNameRef.current.value,
-            max: parseFloat(maxSpendRef.current.value)
-        })
+            budgetName,
+            max
+        });
+
+        toast.success("Budget Added"); // only fires on success
+
         //after adding close the modal
         onClose();
     }
@@ -54,7 +69,7 @@ const AddBudgetModel = ({show, onClose,}) => {
     <input type="number" id="number" ref={maxSpendRef} step={0.01} min={0} placeholder ="Enter max amount" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " required/>
     </div>
   
-    <button type="submit" onClick={notify} className=" bg-[#bdc3c7] text-gray-900 font-semibold hover:bg-gray-800 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300  rounded text-sm w-full sm:w-auto px-5 py-2.5 text-center  place-self-end ">Add Budget</button>
+    <button type="submit" className=" bg-[#bdc3c7] text-gray-900 font-semibold hover:bg-gray-800 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300  rounded text-sm w-full sm:w-auto px-5 py-2.5 text-center  place-self-end ">Add Budget</button>
     </form>
 
             </div>
